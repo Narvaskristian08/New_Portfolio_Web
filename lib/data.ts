@@ -6,12 +6,12 @@ export type Project = {
 }
 
 export const projects: Project[] = [
-  { title: 'Placeholder 1', description: 'WIP: Hand-drawn styled portfolio with playful micro-interactions.', tags: ['Next.js', 'TypeScript', 'Tailwind'], href: '#' },
-  { title: 'Placeholder 2', description: 'WIP: Design system with customizable widgets and themeable components.', tags: ['React', 'Design System', 'Storybook'], href: '#' },
+  { title: 'Placeholder 1', description: 'WIP: Hand-drawn styled portfolio with playful micro-interactions.', tags:['Upcoming'], href: '#' },
+  { title: 'Placeholder 2', description: 'WIP: Design system with customizable widgets and themeable components.', tags: ['Upcoming'], href: '#' },
   { title: 'Placeholder 3', description: 'WIP: Lightweight animation toolkit for landing pages.', tags: ['Framer Motion', 'Animation', 'UI'], href: '#' },
-  { title: 'Placeholder 4', description: 'WIP: Note-taking app with graph relationships and sketches.', tags: ['Node.js', 'Neo4j', 'React'], href: '#' },
+  { title: 'Placeholder 4', description: 'WIP: Note-taking app with graph relationships and sketches.', tags: ['Upcoming'], href: '#' },
   { title: 'Placeholder 5', description: 'WIP: AI-assisted color palette explorer for creatives.', tags: ['AI', 'Next.js', 'OpenAI'], href: '#' },
-  { title: 'Placeholder 6', description: 'WIP: Headless e-commerce starter focused on conversion.', tags: ['Commerce', 'Next.js', 'Stripe'], href: '#' },
+  { title: 'Placeholder 6', description: 'WIP: Headless e-commerce starter focused on conversion.', tags: ['Upcoming'], href: '#' },
   { title: 'Placeholder 7', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
   { title: 'Placeholder 8', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
   { title: 'Placeholder 9', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
