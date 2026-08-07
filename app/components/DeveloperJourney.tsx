@@ -13,10 +13,10 @@ export default function DeveloperJourney() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start end', 'end start'],
+    offset: ['start center', 'end center'],
   })
 
-  const pathProgress = useTransform(scrollYProgress, [0, 0.95], [0, 1])
+  const pathProgress = useTransform(scrollYProgress, [0.1, 1], [0, 1])
 
   // Handle window resize for responsive path
   useEffect(() => {
@@ -172,7 +172,7 @@ export default function DeveloperJourney() {
           <motion.div
             className="absolute left-1/2 hidden xl:block pointer-events-none z-20"
             style={{
-              top: useTransform(scrollYProgress, [0, 0.95], [0, svgHeight]),
+              top: useTransform(scrollYProgress, [0.1, 1], ['0%', '100%']),
               x: '-50%',
             }}
           >

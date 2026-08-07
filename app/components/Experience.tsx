@@ -111,7 +111,7 @@ export default function Experience() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section className="py-20 px-4 relative overflow-hidden">
+    <section id="experience" className="anchor-offset py-20 px-4 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 right-10 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 left-10 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
@@ -119,7 +119,7 @@ export default function Experience() {
 
       <motion.div
         ref={ref}
-        className="relative z-10 max-w-5xl mx-auto"
+        className="relative z-10 max-w-6xl mx-auto"
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ duration: 0.6 }}
@@ -184,11 +184,11 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.2 }}
     >
-      <div className={`flex items-center gap-8 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+      <div className={`flex items-center gap-4 md:gap-8 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
         {/* Content */}
         <div className="flex-1 ml-16 md:ml-0">
           <motion.div
-            className={`glass-card rounded-2xl p-6 md:p-8 group hover:scale-[1.02] transition-all duration-300 ${
+            className={`glass-card rounded-2xl p-5 md:p-8 group hover:scale-[1.02] transition-all duration-300 shadow-lg ${
               isLeft ? 'md:mr-8' : 'md:ml-8'
             }`}
             whileHover={{ y: -4 }}
@@ -196,28 +196,28 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
             {/* Header */}
             <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
               <div className="flex-1">
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 transition-all duration-300">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 transition-all duration-300">
                   {experience.title}
                 </h3>
-                <p className="text-purple-500 dark:text-purple-400 font-semibold">{experience.organization}</p>
+                <p className="text-purple-600 dark:text-purple-400 font-semibold text-base">{experience.organization}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-gray-600 dark:text-gray-400">{experience.period}</p>
-                <p className="text-xs text-gray-500 mt-1">{experience.location}</p>
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">{experience.period}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{experience.location}</p>
               </div>
             </div>
 
             {/* Description */}
-            <ul className="space-y-2 mb-4">
+            <ul className="space-y-3 mb-6">
               {experience.description.map((desc, i) => (
                 <motion.li
                   key={i}
-                  className="text-gray-600 dark:text-gray-400 flex items-start gap-2"
+                  className="text-gray-700 dark:text-gray-300 flex items-start gap-3 text-sm md:text-base leading-relaxed"
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: index * 0.2 + i * 0.1 }}
                 >
-                  <span className="text-purple-500 dark:text-purple-400 mt-1.5 text-xs">▹</span>
+                  <span className="text-purple-500 dark:text-purple-400 mt-1.5 text-xs flex-shrink-0">▹</span>
                   <span>{desc}</span>
                 </motion.li>
               ))}
@@ -229,7 +229,7 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
                 {experience.technologies.map((tech, i) => (
                   <motion.span
                     key={tech}
-                    className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-gray-700 dark:text-gray-300 border border-purple-500/20"
+                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-gray-800 dark:text-gray-200 border border-purple-500/20 hover:border-purple-500/40 transition-colors duration-300"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={isInView ? { opacity: 1, scale: 1 } : {}}
                     transition={{ delay: index * 0.2 + 0.4 + i * 0.05 }}
@@ -241,22 +241,22 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
             )}
 
             {/* Type badge */}
-            <div className="absolute top-6 right-6">
+            <div className="absolute top-4 md:top-6 right-4 md:right-6">
               <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+                className="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md"
                 style={{
                   background: `linear-gradient(135deg, ${colors.primary}20, ${colors.secondary}20)`,
                   border: `1px solid ${colors.primary}40`,
                 }}
               >
-                <Icon className="w-5 h-5" style={{ color: colors.primary }} />
+                <Icon className="w-4 h-4 md:w-5 md:h-5" style={{ color: colors.primary }} />
               </div>
             </div>
           </motion.div>
         </div>
 
         {/* Timeline dot */}
-        <div className="absolute left-8 md:left-1/2 md:transform md:-translate-x-1/2">
+        <div className="absolute left-8 md:left-1/2 md:transform md:-translate-x-1/2 z-10">
           <motion.div
             className="relative"
             initial={{ scale: 0 }}
@@ -264,7 +264,7 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
             transition={{ delay: index * 0.2, type: 'spring', stiffness: 260, damping: 20 }}
           >
             <motion.div
-              className="w-4 h-4 rounded-full"
+              className="w-5 h-5 md:w-6 md:h-6 rounded-full"
               style={{
                 background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
                 boxShadow: `0 0 20px ${colors.primary}80`,
@@ -284,10 +284,10 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
               className="absolute inset-0 rounded-full"
               style={{
                 border: `2px solid ${colors.primary}40`,
-                scale: 2,
+                scale: 1.8,
               }}
               animate={{
-                scale: [2, 2.5, 2],
+                scale: [1.8, 2.2, 1.8],
                 opacity: [0.5, 0, 0.5],
               }}
               transition={{ duration: 2, repeat: Infinity }}
