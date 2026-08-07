@@ -7,6 +7,48 @@ import { projects, journeyContent } from '@/lib/data'
 
 export default function DeveloperJourney() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [windowWidth, setWindowWidth] = useState(0)
+  const [visibleFlags, setVisibleFlags] = useState<boolean[]>(new Array(projects.length).fill(false))
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Generate path segments between each flag
+  const generatePathSegments = () => {
+    const spacing = windowWidth >= 768 ? 400 : 320
+    const centerX = 50
+    const amplitude = windowWidth >= 768 ? 15 : 10
+    const segments: string[] = []
+
+    for (let i = 0; i < projects.length - 1; i++) {
+      const y1 = (i + 1) * spacing
+      const y2 = (i + 2) * spacing
+      const xOffset1 = i % 2 === 0 ? amplitude : -amplitude
+      const xOffset2 = (i + 1) % 2 === 0 ? amplitude : -amplitude
+      
+      const controlY1 = y1 + spacing * 0.25
+      const controlY2 = y1 + spacing * 0.5
+      const controlY3 = y1 + spacing * 0.75
+
+      let segment = `M ${centerX} ${y1}`
+      segment += ` Q ${centerX + xOffset1} ${controlY1}, ${centerX} ${controlY2}`
+      segment += ` Q ${centerX - xOffset2} ${controlY3}, ${centerX} ${y2}`
+      
+      segments.push(segment)
+    }
+
+    return segments
+  }
+
+  const svgHeight = projects.length * (windowWidth >= 768 ? 400 : 320)
+  const pathSegments = generatePathSegments()
 
   return (
     <section
@@ -45,8 +87,59 @@ export default function DeveloperJourney() {
 
         {/* Journey Container */}
         <div className="relative">
-          {/* Simple vertical line - always visible */}
-          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 md:-translate-x-1/2 bg-gradient-to-b from-purple-500/20 via-pink-500/30 to-purple-500/20" />
+          {/* Mobile simple line */}
+          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500/20 via-pink-500/30 to-purple-500/20 md:hidden" />
+
+          {/* Desktop SVG curved path segments */}
+          <svg
+            className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden md:block"
+            width="100"
+            height={svgHeight}
+            style={{ 
+              overflow: 'visible',
+              width: '100px',
+              height: `${svgHeight}px`
+            }}
+            viewBox={`0 0 100 ${svgHeight}`}
+            preserveAspectRatio="xMidYMin meet"
+          >
+            <defs>
+              <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#667eea" />
+                <stop offset="50%" stopColor="#764ba2" />
+                <stop offset="100%" stopColor="#f093fb" />
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            {/* Draw each segment - only colored if both flags are visible */}
+            {pathSegments.map((segment, index) => {
+              const bothFlagsVisible = visibleFlags[index] && visibleFlags[index + 1]
+              return (
+                <motion.path
+                  key={index}
+                  d={segment}
+                  fill="none"
+                  stroke="url(#pathGradient)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  filter="url(#glow)"
+                  initial={{ pathLength: 0, opacity: 0.2 }}
+                  animate={{ 
+                    pathLength: bothFlagsVisible ? 1 : 0,
+                    opacity: bothFlagsVisible ? 1 : 0.2
+                  }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                />
+              )
+            })}
+          </svg>
 
           {/* Projects */}
           <div className="space-y-24 md:space-y-40 relative py-20">
@@ -56,6 +149,13 @@ export default function DeveloperJourney() {
                 project={project}
                 index={index}
                 isLeft={index % 2 === 0}
+                onVisibilityChange={(isVisible) => {
+                  setVisibleFlags(prev => {
+                    const newState = [...prev]
+                    newState[index] = isVisible
+                    return newState
+                  })
+                }}
               />
             ))}
           </div>
@@ -93,12 +193,17 @@ type ProjectMilestoneProps = {
   }
   index: number
   isLeft: boolean
+  onVisibilityChange: (isVisible: boolean) => void
 }
 
-function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
+function ProjectMilestone({ project, index, isLeft, onVisibilityChange }: ProjectMilestoneProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-15%' })
   const [showCheckmark, setShowCheckmark] = useState(false)
+
+  useEffect(() => {
+    onVisibilityChange(isInView)
+  }, [isInView, onVisibilityChange])
 
   useEffect(() => {
     if (isInView) {
@@ -115,37 +220,118 @@ function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Flag Marker - appears when project is in view */}
+      {/* Circle + Flag Marker on the path */}
       <div className="absolute left-8 md:left-1/2 top-4 md:top-8 md:-translate-x-1/2 z-20">
         <motion.div
-          initial={{ scale: 0, y: -20 }}
-          animate={isInView ? { scale: 1, y: 0 } : { scale: 0, y: -20 }}
+          className="relative flex items-center justify-center"
+          initial={{ scale: 0 }}
+          animate={isInView ? { scale: 1 } : { scale: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
         >
-          {/* Flag SVG */}
-          <svg width="32" height="40" viewBox="0 0 32 40" className="drop-shadow-lg">
-            {/* Flag pole */}
-            <rect x="2" y="0" width="2" height="40" fill="url(#flagPoleGradient-{index})" />
-            {/* Flag */}
-            <motion.path
-              d="M 4 4 Q 16 0 24 4 Q 16 8 24 12 Q 16 16 4 12 Z"
-              fill="url(#flagGradient-{index})"
-              initial={{ scaleX: 0 }}
-              animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              style={{ transformOrigin: 'left' }}
-            />
-            <defs>
-              <linearGradient id={`flagGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#667eea" />
-                <stop offset="100%" stopColor="#f093fb" />
-              </linearGradient>
-              <linearGradient id={`flagPoleGradient-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#9333ea" />
-                <stop offset="100%" stopColor="#ec4899" />
-              </linearGradient>
-            </defs>
-          </svg>
+          {/* Circle behind flag */}
+          <motion.div
+            className="absolute w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500"
+            animate={{
+              boxShadow: [
+                '0 0 20px rgba(147, 51, 234, 0.5)',
+                '0 0 30px rgba(147, 51, 234, 0.8)',
+                '0 0 20px rgba(147, 51, 234, 0.5)',
+              ],
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          
+          {/* Outer pulsing ring */}
+          <motion.div
+            className="absolute w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-purple-400/50"
+            animate={{
+              scale: [1, 1.4, 1],
+              opacity: [0.5, 0, 0.5],
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+
+          {/* Flag SVG on top */}
+          <motion.div
+            className="relative z-10"
+            initial={{ scale: 0, y: -20 }}
+            animate={isInView ? { scale: 1, y: 0 } : { scale: 0, y: -20 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
+          >
+            <svg width="42" height="48" viewBox="0 0 42 48" className="drop-shadow-2xl">
+              {/* Flag pole shadow */}
+              <rect x="6.5" y="1" width="2.5" height="48" fill="rgba(0,0,0,0.2)" opacity="0.3" />
+              
+              {/* Flag pole */}
+              <rect x="5" y="0" width="2.5" height="48" fill="url(#flagPoleGradient-${index})" rx="1" />
+              
+              {/* Flag shadow */}
+              <motion.path
+                d="M 7.8 8.5 Q 20 4.5 30 8.5 L 30 20.5 Q 20 24.5 7.8 20.5 Z"
+                fill="rgba(0,0,0,0.15)"
+                initial={{ scaleX: 0 }}
+                animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+                style={{ transformOrigin: 'left' }}
+              />
+              
+              {/* Main flag body */}
+              <motion.path
+                d="M 7.5 7 Q 20 3 30 7 L 30 19 Q 20 23 7.5 19 Z"
+                fill="url(#flagGradient-${index})"
+                stroke="rgba(255,255,255,0.8)"
+                strokeWidth="0.8"
+                initial={{ scaleX: 0 }}
+                animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                style={{ transformOrigin: 'left' }}
+              />
+              
+              {/* Flag highlight/shine */}
+              <motion.path
+                d="M 8 8 Q 18 5 26 8 L 26 12 Q 18 9 8 12 Z"
+                fill="url(#flagHighlight-${index})"
+                opacity="0.4"
+                initial={{ scaleX: 0 }}
+                animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+                style={{ transformOrigin: 'left' }}
+              />
+              
+              {/* Flag number/icon */}
+              <motion.text
+                x="18"
+                y="16"
+                textAnchor="middle"
+                fill="white"
+                fontSize="8"
+                fontWeight="bold"
+                fontFamily="system-ui"
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                {index + 1}
+              </motion.text>
+              
+              <defs>
+                <linearGradient id={`flagGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#667eea" />
+                  <stop offset="50%" stopColor="#764ba2" />
+                  <stop offset="100%" stopColor="#f093fb" />
+                </linearGradient>
+                <linearGradient id={`flagHighlight-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="transparent" />
+                </linearGradient>
+                <linearGradient id={`flagPoleGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#c7d2fe" />
+                  <stop offset="50%" stopColor="#e0e7ff" />
+                  <stop offset="100%" stopColor="#c7d2fe" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </motion.div>
         </motion.div>
       </div>
 
