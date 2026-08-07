@@ -14,7 +14,7 @@ export default function DeveloperJourney() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start start', 'end end'],
+    offset: ['start 20%', 'end 80%'],
   })
 
   const pathProgress = useTransform(scrollYProgress, [0, 1], [0, 1])
@@ -229,8 +229,9 @@ export default function DeveloperJourney() {
           </motion.div>
 
           {/* Projects */}
-          <div className="space-y-16 md:space-y-32 relative" style={{ 
-            marginTop: windowWidth ? Math.max(300, Math.min(400, windowWidth * 0.3)) * 0.25 : 100 
+          <div className="space-y-24 md:space-y-40 relative" style={{ 
+            paddingTop: '100px',
+            paddingBottom: '100px'
           }}>
             {projects.map((project, index) => (
               <ProjectMilestone
@@ -284,11 +285,12 @@ type ProjectMilestoneProps = {
 function ProjectMilestone({ project, index, isLeft, spacing, scrollProgress }: ProjectMilestoneProps) {
   const ref = useRef(null)
   
-  // Calculate when this milestone should be reached (based on its position in the list)
-  const milestoneProgress = (index + 1) / projects.length
+  // Calculate when this milestone should be reached
+  // Distribute milestones evenly across scroll progress with some padding
+  const milestoneProgress = (index + 0.5) / (projects.length + 0.5)
   
-  // Project is "unlocked" when scroll progress reaches its milestone
-  const isUnlocked = scrollProgress >= milestoneProgress - 0.1
+  // Project is "unlocked" slightly before the orb reaches it (smoother experience)
+  const isUnlocked = scrollProgress >= milestoneProgress - 0.08
   const isCompleted = scrollProgress >= milestoneProgress
   
   const [showCheckmark, setShowCheckmark] = useState(false)
