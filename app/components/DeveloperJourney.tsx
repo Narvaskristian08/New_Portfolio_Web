@@ -13,10 +13,10 @@ export default function DeveloperJourney() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start center', 'end center'],
+    offset: ['start start', 'end end'],
   })
 
-  const pathProgress = useTransform(scrollYProgress, [0.1, 1], [0, 1])
+  const pathProgress = useTransform(scrollYProgress, [0, 1], [0, 1])
 
   // Handle window resize for responsive path
   useEffect(() => {
@@ -62,6 +62,9 @@ export default function DeveloperJourney() {
 
   // Calculate responsive SVG dimensions
   const svgHeight = windowWidth ? projects.length * Math.max(300, Math.min(400, windowWidth * 0.3)) : projects.length * 400
+  
+  // Generate path once windowWidth is set
+  const pathData = generatePath()
 
   return (
     <section
@@ -139,28 +142,30 @@ export default function DeveloperJourney() {
               </filter>
             </defs>
 
-            {/* Background path */}
-            <motion.path
+            {/* Background path - fully visible from start */}
+            <path
               ref={pathRef}
-              d={generatePath()}
+              d={pathData}
               fill="none"
               stroke="url(#pathGradient)"
               strokeWidth="3"
               strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              style={{ pathLength: pathProgress }}
+              opacity="0.5"
             />
 
-            {/* Glowing path overlay */}
+            {/* Glowing path overlay - draws as you scroll */}
             <motion.path
-              d={generatePath()}
+              d={pathData}
               fill="none"
               stroke="#667eea"
               strokeWidth="2"
               strokeLinecap="round"
               filter="url(#glow)"
-              initial={{ pathLength: 0 }}
-              style={{ pathLength: pathProgress }}
+              strokeDasharray={pathLength}
+              strokeDashoffset={pathLength}
+              style={{ 
+                strokeDashoffset: useTransform(pathProgress, [0, 1], [pathLength, 0])
+              }}
             />
           </svg>
 
@@ -168,7 +173,7 @@ export default function DeveloperJourney() {
           <motion.div
             className="absolute left-1/2 hidden md:block pointer-events-none z-20"
             style={{
-              top: useTransform(scrollYProgress, [0.1, 1], ['0%', '100%']),
+              top: useTransform(scrollYProgress, [0, 1], ['0px', `${svgHeight}px`]),
               x: '-50%',
             }}
           >
@@ -258,12 +263,13 @@ type ProjectMilestoneProps = {
 
 function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneProps) {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const isInView = useInView(ref, { once: true, margin: '-50px' })
   const [isCompleted, setIsCompleted] = useState(false)
 
   useEffect(() => {
     if (isInView) {
-      const timer = setTimeout(() => setIsCompleted(true), 300)
+      // Delay card appearance to sync with orb movement
+      const timer = setTimeout(() => setIsCompleted(true), 600)
       return () => clearTimeout(timer)
     }
   }, [isInView])
@@ -277,8 +283,8 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
         minHeight: `${spacing * 0.8}px`
       }}
       initial={{ opacity: 0 }}
-      animate={isInView ? { opacity: 1 } : {}}
-      transition={{ duration: 0.6, delay: 0.2 }}
+      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.8, delay: 0.3 }}
     >
       <div
         className={`flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 ${
@@ -288,9 +294,9 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
         {/* Project Card */}
         <motion.div
           className="flex-1 w-full max-w-full md:max-w-xl ml-12 md:ml-0"
-          initial={{ opacity: 0, x: isLeft ? -50 : 50, scale: 0.9 }}
-          animate={isInView ? { opacity: 1, x: 0, scale: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          initial={{ opacity: 0, x: isLeft ? -100 : 100, scale: 0.8 }}
+          animate={isInView ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: isLeft ? -100 : 100, scale: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.4, type: "spring", stiffness: 100 }}
         >
           <div className="glass-card rounded-2xl p-6 md:p-8 group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
             {/* Card glow effect */}
