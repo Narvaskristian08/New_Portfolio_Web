@@ -1,14 +1,14 @@
 'use client'
 
-import MoonOutlined from '@ant-design/icons/lib/icons/MoonOutlined'
-import SunOutlined from '@ant-design/icons/lib/icons/SunOutlined'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { HiSun, HiMoon } from 'react-icons/hi'
 
 export function ThemeProviderWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
+    <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={true}>
       {children}
     </NextThemesProvider>
   )
@@ -23,18 +23,27 @@ export function ThemeToggleButton() {
   if (!mounted) return null
 
   return (
-    <button
+    <motion.button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="sketch-button flex items-center justify-center p-2 w-10 h-10"
-      aria-label="Toggle theme"
+      className="glass-card p-3 rounded-xl hover:scale-110 transition-all duration-300 group relative overflow-hidden"
+      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.95 }}
     >
-      {theme === 'dark' ? (
-        // Sun icon (24x24, outline + center) for reliability across browsers
-        <SunOutlined />
-      ) : (
-        // Moon icon (24x24) for reliability across browsers
-<MoonOutlined />
-      )}
-    </button>
+      <div className="relative z-10">
+        {theme === 'dark' ? (
+          <HiSun className="w-5 h-5 text-yellow-500 group-hover:text-yellow-400 transition-colors duration-300" />
+        ) : (
+          <HiMoon className="w-5 h-5 text-purple-600 group-hover:text-purple-500 transition-colors duration-300" />
+        )}
+      </div>
+      
+      {/* Glow effect */}
+      <div 
+        className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md ${
+          theme === 'dark' ? 'bg-yellow-500/20' : 'bg-purple-500/20'
+        }`} 
+      />
+    </motion.button>
   )
 }

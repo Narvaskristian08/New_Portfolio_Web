@@ -4,6 +4,9 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Header from './Header'
 import Preloader from './Preloader'
+import SmoothScroll from './SmoothScroll'
+import CustomCursor from './CustomCursor'
+import A11yAnnouncer from './A11yAnnouncer'
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -62,13 +65,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }, [pathname])
 
   return (
-    <>
+    <SmoothScroll>
+      <CustomCursor />
+      <A11yAnnouncer />
       <Preloader visible={showSplash} />
       <div className={`transition-opacity duration-500 ${showSplash ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <Header />
         {children}
       </div>
-    </>
+    </SmoothScroll>
   )
 }
 
