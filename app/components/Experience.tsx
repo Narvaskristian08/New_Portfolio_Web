@@ -179,13 +179,13 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
 
   return (
     <motion.div
-      className="relative"
+      className="relative min-h-[200px]"
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.2 }}
     >
-      {/* Timeline dot - positioned relative to parent, not flex container */}
-      <div className="absolute left-8 md:left-1/2 top-0 md:top-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 z-10">
+      {/* Timeline dot - positioned absolutely at center on desktop, left on mobile */}
+      <div className="absolute left-8 md:left-1/2 top-8 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20">
         <motion.div
           className="relative"
           initial={{ scale: 0 }}
@@ -224,24 +224,24 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
         </motion.div>
       </div>
 
-      <div className={`flex items-center gap-4 md:gap-8 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+      <div className={`flex items-stretch gap-4 md:gap-12 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
         {/* Content */}
         <div className="flex-1 ml-16 md:ml-0 md:max-w-xl">
           <motion.div
-            className={`glass-card rounded-2xl p-5 md:p-8 group hover:scale-[1.02] transition-all duration-300 shadow-lg ${
-              isLeft ? 'md:mr-8' : 'md:ml-8'
+            className={`glass-card rounded-2xl p-6 md:p-8 group hover:scale-[1.02] transition-all duration-300 shadow-lg h-full ${
+              isLeft ? 'md:mr-12' : 'md:ml-12'
             }`}
             whileHover={{ y: -4 }}
           >
             {/* Header */}
-            <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-              <div className="flex-1">
+            <div className="flex flex-wrap items-start justify-between gap-4 mb-4 pr-12">
+              <div className="flex-1 min-w-0">
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 transition-all duration-300">
                   {experience.title}
                 </h3>
-                <p className="text-purple-600 dark:text-purple-400 font-semibold text-base">{experience.organization}</p>
+                <p className="text-purple-600 dark:text-purple-400 font-semibold text-sm md:text-base">{experience.organization}</p>
               </div>
-              <div className="text-right">
+              <div className="text-right shrink-0">
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">{experience.period}</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{experience.location}</p>
               </div>

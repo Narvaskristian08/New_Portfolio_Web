@@ -10,6 +10,7 @@ export default function DeveloperJourney() {
   const pathRef = useRef<SVGPathElement>(null)
   const [pathLength, setPathLength] = useState(0)
   const [windowWidth, setWindowWidth] = useState(0)
+  const [orbPosition, setOrbPosition] = useState({ x: 50, y: 0 })
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -35,6 +36,21 @@ export default function DeveloperJourney() {
       setPathLength(length)
     }
   }, [windowWidth]) // Re-calculate when window width changes
+
+  // Track current scroll progress as state
+  const [currentScrollProgress, setCurrentScrollProgress] = useState(0)
+
+  // Update scroll progress state and orb position
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on('change', (latest) => {
+      setCurrentScrollProgress(latest)
+      if (pathRef.current && pathLength > 0) {
+        const point = pathRef.current.getPointAtLength(latest * pathLength)
+        setOrbPosition({ x: point.x, y: point.y })
+      }
+    })
+    return () => unsubscribe()
+  }, [scrollYProgress, pathLength])
 
   // Generate smooth curved path with truly responsive dimensions
   const generatePath = () => {
@@ -169,12 +185,14 @@ export default function DeveloperJourney() {
             />
           </svg>
 
-          {/* Traveling Orb - Desktop */}
+          {/* Traveling Orb - Desktop - Follows the curved path */}
           <motion.div
-            className="absolute left-1/2 hidden md:block pointer-events-none z-20"
+            className="absolute hidden md:block pointer-events-none z-20"
             style={{
-              top: useTransform(scrollYProgress, [0, 1], ['0px', `${svgHeight}px`]),
+              left: `${orbPosition.x}px`,
+              top: `${orbPosition.y}px`,
               x: '-50%',
+              y: '-50%',
             }}
           >
             <div className="relative">
@@ -221,6 +239,7 @@ export default function DeveloperJourney() {
                 index={index}
                 isLeft={index % 2 === 0}
                 spacing={windowWidth ? Math.max(300, Math.min(400, windowWidth * 0.3)) : 400}
+                scrollProgress={currentScrollProgress}
               />
             ))}
           </div>
@@ -259,20 +278,29 @@ type ProjectMilestoneProps = {
   index: number
   isLeft: boolean
   spacing: number
+  scrollProgress: number
 }
 
-function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneProps) {
+function ProjectMilestone({ project, index, isLeft, spacing, scrollProgress }: ProjectMilestoneProps) {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-50px' })
-  const [isCompleted, setIsCompleted] = useState(false)
+  
+  // Calculate when this milestone should be reached (based on its position in the list)
+  const milestoneProgress = (index + 1) / projects.length
+  
+  // Project is "unlocked" when scroll progress reaches its milestone
+  const isUnlocked = scrollProgress >= milestoneProgress - 0.1
+  const isCompleted = scrollProgress >= milestoneProgress
+  
+  const [showCheckmark, setShowCheckmark] = useState(false)
 
   useEffect(() => {
-    if (isInView) {
-      // Delay card appearance to sync with orb movement
-      const timer = setTimeout(() => setIsCompleted(true), 600)
+    if (isCompleted) {
+      const timer = setTimeout(() => setShowCheckmark(true), 300)
       return () => clearTimeout(timer)
+    } else {
+      setShowCheckmark(false)
     }
-  }, [isInView])
+  }, [isCompleted])
 
   return (
     <motion.div
@@ -283,8 +311,8 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
         minHeight: `${spacing * 0.8}px`
       }}
       initial={{ opacity: 0 }}
-      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-      transition={{ duration: 0.8, delay: 0.3 }}
+      animate={isUnlocked ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.5 }}
     >
       <div
         className={`flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 ${
@@ -295,8 +323,8 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
         <motion.div
           className="flex-1 w-full max-w-full md:max-w-xl ml-12 md:ml-0"
           initial={{ opacity: 0, x: isLeft ? -100 : 100, scale: 0.8 }}
-          animate={isInView ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: isLeft ? -100 : 100, scale: 0.8 }}
-          transition={{ duration: 0.8, delay: 0.4, type: "spring", stiffness: 100 }}
+          animate={isUnlocked ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: isLeft ? -100 : 100, scale: 0.8 }}
+          transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
         >
           <div className="glass-card rounded-2xl p-6 md:p-8 group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
             {/* Card glow effect */}
@@ -308,7 +336,7 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
                 <span className="text-sm font-mono text-gray-600 dark:text-gray-500">
                   PROJECT {String(index + 1).padStart(2, '0')}
                 </span>
-                {isCompleted && (
+                {showCheckmark && (
                   <motion.div
                     initial={{ scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
@@ -336,8 +364,8 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
                     key={tag}
                     className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-gray-700 dark:text-gray-300 border border-purple-500/20"
                     initial={{ opacity: 0, scale: 0.8 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ delay: 0.5 + tagIndex * 0.1 }}
+                    animate={isUnlocked ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                    transition={{ delay: tagIndex * 0.1 }}
                   >
                     {tag}
                   </motion.span>
@@ -380,7 +408,7 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
           <motion.div
             className="relative"
             initial={{ scale: 0 }}
-            animate={isCompleted ? { scale: 1 } : { scale: 0 }}
+            animate={isUnlocked ? { scale: 1 } : { scale: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 20 }}
           >
             {/* Mobile marker */}
@@ -406,7 +434,7 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
           <motion.div
             className="relative"
             initial={{ scale: 0 }}
-            animate={isCompleted ? { scale: 1 } : { scale: 0 }}
+            animate={isUnlocked ? { scale: 1 } : { scale: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 20 }}
           >
             {/* Outer ring */}
@@ -429,7 +457,7 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
             </motion.div>
 
             {/* Completion particles */}
-            {isCompleted && (
+            {showCheckmark && (
               <>
                 {[...Array(6)].map((_, i) => (
                   <motion.div
