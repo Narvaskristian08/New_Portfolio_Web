@@ -100,10 +100,6 @@ export default function DeveloperJourney() {
 
         {/* Journey Container */}
         <div className="relative">
-          {/* CSS Fallback Timeline for extreme screen sizes */}
-          <div className="absolute left-1/2 top-0 bottom-0 transform -translate-x-1/2 hidden md:block xl:hidden">
-            <div className="w-0.5 h-full bg-gradient-to-b from-purple-500/30 via-pink-500/50 to-purple-500/30" />
-          </div>
           {/* Mobile Timeline Line - Enhanced responsive */}
           <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500 md:hidden">
             {/* Mobile progress indicator */}
@@ -117,7 +113,7 @@ export default function DeveloperJourney() {
 
           {/* Desktop SVG Path */}
           <svg
-            className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden xl:block"
+            className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden md:block"
             width="100"
             height={svgHeight}
             style={{ 
@@ -170,7 +166,7 @@ export default function DeveloperJourney() {
 
           {/* Traveling Orb - Desktop */}
           <motion.div
-            className="absolute left-1/2 hidden xl:block pointer-events-none z-20"
+            className="absolute left-1/2 hidden md:block pointer-events-none z-20"
             style={{
               top: useTransform(scrollYProgress, [0.1, 1], ['0%', '100%']),
               x: '-50%',

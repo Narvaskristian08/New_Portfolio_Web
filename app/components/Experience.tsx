@@ -184,9 +184,49 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.2 }}
     >
+      {/* Timeline dot - positioned relative to parent, not flex container */}
+      <div className="absolute left-8 md:left-1/2 top-0 md:top-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 z-10">
+        <motion.div
+          className="relative"
+          initial={{ scale: 0 }}
+          animate={isInView ? { scale: 1 } : {}}
+          transition={{ delay: index * 0.2, type: 'spring', stiffness: 260, damping: 20 }}
+        >
+          <motion.div
+            className="w-5 h-5 md:w-6 md:h-6 rounded-full"
+            style={{
+              background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+              boxShadow: `0 0 20px ${colors.primary}80`,
+            }}
+            animate={{
+              boxShadow: [
+                `0 0 20px ${colors.primary}60`,
+                `0 0 30px ${colors.primary}80`,
+                `0 0 20px ${colors.primary}60`,
+              ],
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+
+          {/* Outer ring */}
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            style={{
+              border: `2px solid ${colors.primary}40`,
+              scale: 1.8,
+            }}
+            animate={{
+              scale: [1.8, 2.2, 1.8],
+              opacity: [0.5, 0, 0.5],
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        </motion.div>
+      </div>
+
       <div className={`flex items-center gap-4 md:gap-8 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
         {/* Content */}
-        <div className="flex-1 ml-16 md:ml-0">
+        <div className="flex-1 ml-16 md:ml-0 md:max-w-xl">
           <motion.div
             className={`glass-card rounded-2xl p-5 md:p-8 group hover:scale-[1.02] transition-all duration-300 shadow-lg ${
               isLeft ? 'md:mr-8' : 'md:ml-8'
@@ -255,45 +295,8 @@ function ExperienceCard({ experience, index, isInView }: ExperienceCardProps) {
           </motion.div>
         </div>
 
-        {/* Timeline dot */}
-        <div className="absolute left-8 md:left-1/2 md:transform md:-translate-x-1/2 z-10">
-          <motion.div
-            className="relative"
-            initial={{ scale: 0 }}
-            animate={isInView ? { scale: 1 } : {}}
-            transition={{ delay: index * 0.2, type: 'spring', stiffness: 260, damping: 20 }}
-          >
-            <motion.div
-              className="w-5 h-5 md:w-6 md:h-6 rounded-full"
-              style={{
-                background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
-                boxShadow: `0 0 20px ${colors.primary}80`,
-              }}
-              animate={{
-                boxShadow: [
-                  `0 0 20px ${colors.primary}60`,
-                  `0 0 30px ${colors.primary}80`,
-                  `0 0 20px ${colors.primary}60`,
-                ],
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-
-            {/* Outer ring */}
-            <motion.div
-              className="absolute inset-0 rounded-full"
-              style={{
-                border: `2px solid ${colors.primary}40`,
-                scale: 1.8,
-              }}
-              animate={{
-                scale: [1.8, 2.2, 1.8],
-                opacity: [0.5, 0, 0.5],
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-          </motion.div>
-        </div>
+        {/* Spacer for alternating layout on desktop */}
+        <div className="hidden md:block flex-1 max-w-xl" />
       </div>
     </motion.div>
   )
