@@ -100,6 +100,10 @@ export default function DeveloperJourney() {
 
         {/* Journey Container */}
         <div className="relative">
+          {/* CSS Fallback Timeline for extreme screen sizes */}
+          <div className="absolute left-1/2 top-0 bottom-0 transform -translate-x-1/2 hidden md:block xl:hidden">
+            <div className="w-0.5 h-full bg-gradient-to-b from-purple-500/30 via-pink-500/50 to-purple-500/30" />
+          </div>
           {/* Mobile Timeline Line - Enhanced responsive */}
           <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500 md:hidden">
             {/* Mobile progress indicator */}
@@ -113,7 +117,7 @@ export default function DeveloperJourney() {
 
           {/* Desktop SVG Path */}
           <svg
-            className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden md:block"
+            className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden xl:block"
             width="100"
             height={svgHeight}
             style={{ 
@@ -166,7 +170,7 @@ export default function DeveloperJourney() {
 
           {/* Traveling Orb - Desktop */}
           <motion.div
-            className="absolute left-1/2 hidden md:block pointer-events-none z-20"
+            className="absolute left-1/2 hidden xl:block pointer-events-none z-20"
             style={{
               top: useTransform(scrollYProgress, [0, 0.95], [0, svgHeight]),
               x: '-50%',
@@ -405,7 +409,7 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
           >
             {/* Outer ring */}
             <motion.div
-              className="w-12 lg:w-16 h-12 lg:h-16 rounded-full border-4 border-purple-500/30 flex items-center justify-center"
+              className="w-8 md:w-12 lg:w-16 h-8 md:h-12 lg:h-16 rounded-full border-2 md:border-4 border-purple-500/30 flex items-center justify-center"
               animate={
                 isCompleted
                   ? {
@@ -419,7 +423,7 @@ function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneP
               transition={{ duration: 1.5, repeat: Infinity }}
             >
               {/* Inner circle */}
-              <div className="w-6 lg:w-8 h-6 lg:h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
+              <div className="w-4 md:w-6 lg:w-8 h-4 md:h-6 lg:h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
             </motion.div>
 
             {/* Completion particles */}
