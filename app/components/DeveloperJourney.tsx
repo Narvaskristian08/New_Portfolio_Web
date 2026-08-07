@@ -9,6 +9,7 @@ export default function DeveloperJourney() {
   const containerRef = useRef<HTMLDivElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
   const [pathLength, setPathLength] = useState(0)
+  const [windowWidth, setWindowWidth] = useState(0)
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -17,34 +18,50 @@ export default function DeveloperJourney() {
 
   const pathProgress = useTransform(scrollYProgress, [0, 0.95], [0, 1])
 
+  // Handle window resize for responsive path
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth)
+    }
+
+    handleResize() // Set initial width
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   useEffect(() => {
     if (pathRef.current) {
       const length = pathRef.current.getTotalLength()
       setPathLength(length)
     }
-  }, [])
+  }, [windowWidth]) // Re-calculate when window width changes
 
-  // Generate smooth curved path
+  // Generate smooth curved path with truly responsive dimensions
   const generatePath = () => {
     const points = projects.length
-    const height = points * 400
+    // Use viewport-based spacing instead of fixed pixels
+    const spacing = windowWidth ? Math.max(300, Math.min(400, windowWidth * 0.3)) : 400
     const centerX = 50
-    const amplitude = 20
+    // Make amplitude responsive to screen width
+    const amplitude = windowWidth ? Math.max(8, Math.min(15, windowWidth * 0.012)) : 15
 
     let path = `M ${centerX} 0`
 
     for (let i = 0; i < points; i++) {
-      const y = (i + 1) * 400
+      const y = (i + 1) * spacing
       const xOffset = i % 2 === 0 ? amplitude : -amplitude
-      const controlY1 = y - 200
-      const controlY2 = y - 100
+      const controlY1 = y - spacing * 0.5
+      const controlY2 = y - spacing * 0.25
 
-      path += ` Q ${centerX + xOffset} ${controlY1}, ${centerX} ${y - 100}`
+      path += ` Q ${centerX + xOffset} ${controlY1}, ${centerX} ${y - spacing * 0.25}`
       path += ` Q ${centerX - xOffset} ${controlY2}, ${centerX} ${y}`
     }
 
     return path
   }
+
+  // Calculate responsive SVG dimensions
+  const svgHeight = windowWidth ? projects.length * Math.max(300, Math.min(400, windowWidth * 0.3)) : projects.length * 400
 
   return (
     <section
@@ -83,12 +100,29 @@ export default function DeveloperJourney() {
 
         {/* Journey Container */}
         <div className="relative">
-          {/* SVG Path */}
+          {/* Mobile Timeline Line - Enhanced responsive */}
+          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500 md:hidden">
+            {/* Mobile progress indicator */}
+            <motion.div
+              className="w-full bg-gradient-to-b from-purple-400 to-pink-400 origin-top"
+              style={{
+                scaleY: scrollYProgress,
+              }}
+            />
+          </div>
+
+          {/* Desktop SVG Path */}
           <svg
             className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden md:block"
             width="100"
-            height={projects.length * 400}
-            style={{ overflow: 'visible' }}
+            height={svgHeight}
+            style={{ 
+              overflow: 'visible',
+              width: '100px',
+              height: `${svgHeight}px`
+            }}
+            viewBox={`0 0 100 ${svgHeight}`}
+            preserveAspectRatio="xMidYMin meet"
           >
             <defs>
               <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -130,11 +164,11 @@ export default function DeveloperJourney() {
             />
           </svg>
 
-          {/* Traveling Orb */}
+          {/* Traveling Orb - Desktop */}
           <motion.div
-            className="absolute left-1/2 hidden md:block pointer-events-none"
+            className="absolute left-1/2 hidden md:block pointer-events-none z-20"
             style={{
-              top: useTransform(scrollYProgress, [0, 0.95], [0, projects.length * 400]),
+              top: useTransform(scrollYProgress, [0, 0.95], [0, svgHeight]),
               x: '-50%',
             }}
           >
@@ -172,13 +206,16 @@ export default function DeveloperJourney() {
           </motion.div>
 
           {/* Projects */}
-          <div className="space-y-32 relative">
+          <div className="space-y-16 md:space-y-32 relative" style={{ 
+            marginTop: windowWidth ? Math.max(300, Math.min(400, windowWidth * 0.3)) * 0.25 : 100 
+          }}>
             {projects.map((project, index) => (
               <ProjectMilestone
                 key={index}
                 project={project}
                 index={index}
                 isLeft={index % 2 === 0}
+                spacing={windowWidth ? Math.max(300, Math.min(400, windowWidth * 0.3)) : 400}
               />
             ))}
           </div>
@@ -216,9 +253,10 @@ type ProjectMilestoneProps = {
   }
   index: number
   isLeft: boolean
+  spacing: number
 }
 
-function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
+function ProjectMilestone({ project, index, isLeft, spacing }: ProjectMilestoneProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const [isCompleted, setIsCompleted] = useState(false)
@@ -234,30 +272,34 @@ function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
     <motion.div
       ref={ref}
       className="relative"
+      style={{ 
+        marginBottom: `${spacing * 0.6}px`,
+        minHeight: `${spacing * 0.8}px`
+      }}
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : {}}
       transition={{ duration: 0.6, delay: 0.2 }}
     >
       <div
-        className={`flex flex-col md:flex-row items-center gap-8 ${
+        className={`flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 ${
           isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
         }`}
       >
         {/* Project Card */}
         <motion.div
-          className="flex-1 w-full max-w-xl"
+          className="flex-1 w-full max-w-full md:max-w-xl ml-12 md:ml-0"
           initial={{ opacity: 0, x: isLeft ? -50 : 50, scale: 0.9 }}
           animate={isInView ? { opacity: 1, x: 0, scale: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <div className="glass-card rounded-2xl p-8 group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
+          <div className="glass-card rounded-2xl p-6 md:p-8 group hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
             {/* Card glow effect */}
             <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
 
             <div className="relative z-10">
               {/* Project number */}
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-mono text-gray-500">
+                <span className="text-sm font-mono text-gray-600 dark:text-gray-500">
                   PROJECT {String(index + 1).padStart(2, '0')}
                 </span>
                 {isCompleted && (
@@ -272,12 +314,12 @@ function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
               </div>
 
               {/* Project title */}
-              <h3 className="text-2xl md:text-3xl font-bold mb-4 gradient-text">
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 gradient-text">
                 {project.title}
               </h3>
 
               {/* Project description */}
-              <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-sm md:text-base">
                 {project.description}
               </p>
 
@@ -298,7 +340,7 @@ function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
 
               {/* Action buttons */}
               {(project.github || project.demo) && (
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                   {project.github && (
                     <a
                       href={project.github}
@@ -327,7 +369,33 @@ function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
           </div>
         </motion.div>
 
-        {/* Milestone marker */}
+        {/* Mobile Timeline Marker */}
+        <div className="absolute left-8 md:hidden">
+          <motion.div
+            className="relative"
+            initial={{ scale: 0 }}
+            animate={isCompleted ? { scale: 1 } : { scale: 0 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+          >
+            {/* Mobile marker */}
+            <motion.div
+              className="w-4 h-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg"
+              animate={
+                isCompleted
+                  ? {
+                      boxShadow: [
+                        '0 0 0 0 rgba(147, 51, 234, 0.7)',
+                        '0 0 0 10px rgba(147, 51, 234, 0)',
+                      ],
+                    }
+                  : {}
+              }
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          </motion.div>
+        </div>
+
+        {/* Desktop Milestone marker */}
         <div className="hidden md:block relative">
           <motion.div
             className="relative"
@@ -337,7 +405,7 @@ function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
           >
             {/* Outer ring */}
             <motion.div
-              className="w-16 h-16 rounded-full border-4 border-purple-500/30 flex items-center justify-center"
+              className="w-12 lg:w-16 h-12 lg:h-16 rounded-full border-4 border-purple-500/30 flex items-center justify-center"
               animate={
                 isCompleted
                   ? {
@@ -351,7 +419,7 @@ function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
               transition={{ duration: 1.5, repeat: Infinity }}
             >
               {/* Inner circle */}
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
+              <div className="w-6 lg:w-8 h-6 lg:h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
             </motion.div>
 
             {/* Completion particles */}
@@ -375,7 +443,7 @@ function ProjectMilestone({ project, index, isLeft }: ProjectMilestoneProps) {
           </motion.div>
         </div>
 
-        {/* Spacer for alternating layout */}
+        {/* Spacer for alternating layout - Desktop only */}
         <div className="hidden md:block flex-1 max-w-xl" />
       </div>
     </motion.div>
