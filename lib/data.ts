@@ -1,21 +1,99 @@
 export type Project = {
+  slug: string
   title: string
   description: string
+  period: string
+  role: string
   tags: string[]
-  href?: string
+  highlights?: string[]
 }
 
 export const projects: Project[] = [
-  { title: 'Placeholder 1', description: 'WIP: Project details coming soon.', tags:['Upcoming'], href: '#' },
-  { title: 'Placeholder 2', description: 'WIP: Project details coming soon..', tags: ['Upcoming'], href: '#' },
-  { title: 'Placeholder 3', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
-  { title: 'Placeholder 4', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
-  { title: 'Placeholder 5', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
-  { title: 'Placeholder 6', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
-  { title: 'Placeholder 7', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
-  { title: 'Placeholder 8', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
-  { title: 'Placeholder 9', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
-  { title: 'Placeholder 10', description: 'WIP: Project details coming soon.', tags: ['Upcoming'], href: '#' },
+  {
+    slug: 'biotrack-healthcare',
+    title: 'BioTrack Healthcare',
+    description:
+      'A cross-platform healthcare monitoring platform connecting patient, provider, and administrator workflows across web and mobile.',
+    period: 'Capstone Project · 2025',
+    role: 'Full-Stack & AI Developer',
+    tags: ['Next.js', 'TypeScript', 'Express.js', 'MongoDB', 'Flutter', 'OpenAI API', 'Solidity'],
+    highlights: [
+      'Built responsive, role-based dashboards for health monitoring, vitals history, medical records, analytics, reports, and AI advisory workflows.',
+      'Developed secure REST APIs for authentication, sessions, RBAC, provider verification, patients, health centers, alerts, and audit logs.',
+      'Connected OpenAI health insights, Flutter vital-scanning and PPG workflows, and blockchain proof logging across the platform.',
+    ],
+  },
+  {
+    slug: 'medexplain',
+    title: 'MedExplain',
+    description:
+      'An AI-powered web and mobile application that uses natural language processing to simplify medical terms, diagnoses, and prescriptions for non-medical users.',
+    period: 'Sep 2025 – Nov 2025',
+    role: 'Software & AI Developer',
+    tags: ['JavaScript', 'Python', 'NLP', 'MySQL', 'PHP', 'Jetpack Compose'],
+    highlights: [
+      'Built real-time response and data-processing features across the web and mobile experiences.',
+      'Focused the application on making complex medical information clearer and more accessible to non-medical users.',
+    ],
+  },
+  {
+    slug: 'likha-ai',
+    title: 'Likha AI',
+    description:
+      'A computer-vision web and mobile application for analyzing cultural relics and textiles to identify visual patterns and materials.',
+    period: 'Sep 2025 – Nov 2025',
+    role: 'Project Manager & AI Developer',
+    tags: ['Python', 'TensorFlow', 'OpenCV', 'JavaScript', 'MySQL', 'PHP', 'Kotlin'],
+    highlights: [
+      'Implemented origin and provenance analysis with confidence scoring.',
+      'Managed the mobile rebuild by coordinating project scope and delivery while contributing to the AI implementation.',
+    ],
+  },
+  {
+    slug: 'ladon-photocopies',
+    title: 'Ladon Photocopies',
+    description:
+      'A database-backed web and mobile e-commerce application created for a local photocopying and supplies business.',
+    period: 'Feb 2025 – Mar 2025',
+    role: 'Development Team Member',
+    tags: ['JavaScript', 'PHP', 'MySQL', 'Jetpack Compose', 'Stripe'],
+    highlights: [
+      'Collaborated with a development team to deliver the web and mobile shopping experiences.',
+      'Implemented real-time product data display and integrated Stripe payment functionality.',
+    ],
+  },
+  {
+    slug: 'hotel-haven',
+    title: 'HotelHaven',
+    description:
+      'A cross-platform mobile hotel room reservation application designed to make finding and booking accommodations simple and secure.',
+    period: '2024',
+    role: 'Assistant Developer',
+    tags: ['Expo', 'React Native', 'TypeScript', 'NativeWind', 'Laravel API', 'Stripe'],
+    highlights: [
+      'Supports secure account authentication and profile management through the mobile experience.',
+      'Lets guests browse available rooms, filter by room type, and review room details and amenities.',
+      'Checks reservation dates for availability, calculates the total stay price, and processes payments with Stripe.',
+    ],
+  },
+  {
+    slug: 'edugrade',
+    title: 'EduGrade',
+    description:
+      'A Java and Kotlin project delivered with responsibility for leading its development.',
+    period: 'Additional Project',
+    role: 'Lead Developer',
+    tags: ['Java', 'Kotlin'],
+  },
+  {
+    slug: 'shoevenier',
+    title: 'Shoevenier',
+    description:
+      'An HTML and CSS project delivered with responsibility for leading its development.',
+    period: 'Additional Project',
+    role: 'Lead Developer',
+    tags: ['HTML', 'CSS'],
+  },
 ]
 
 export type BlogPost = {
