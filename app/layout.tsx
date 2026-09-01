@@ -7,8 +7,8 @@ import AppShell from './components/AppShell'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Portfolio - Drawing Style',
-  description: 'A hand-drawn style portfolio',
+  title: 'KDBN Portfolio',
+description: 'A portfolio showcasing the work of KDBN, a software developer specializing in full-stack, frontend, mobile, and AI development.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

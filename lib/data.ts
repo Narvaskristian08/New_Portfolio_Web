@@ -55,7 +55,7 @@ export const projects: Project[] = [
     description:
       'A database-backed web and mobile e-commerce application created for a local photocopying and supplies business.',
     period: 'Feb 2025 – Mar 2025',
-    role: 'Development Team Member',
+    role: 'Full-Stack Developer',
     tags: ['JavaScript', 'PHP', 'MySQL', 'Jetpack Compose', 'Stripe'],
     highlights: [
       'Collaborated with a development team to deliver the web and mobile shopping experiences.',
