@@ -10,6 +10,34 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: 'nora-local-swarm',
+    title: 'NORA Local Swarm',
+    description:
+      'A local, privacy-focused multi-agent AI assistant that coordinates specialized agents to plan, code, review, research, test, and complete user-defined goals.',
+    period: 'Jul 2026 – Sep 2026',
+    role: 'Solo AI Systems Developer',
+    tags: ['Python', 'Ollama', 'Multi-Agent AI', 'ChromaDB', 'SQLite', 'Pydantic'],
+    highlights: [
+      'Built an orchestration system for eight specialized agents covering planning, coding, review, research, testing, memory, reflection, and framework installation.',
+      'Implemented three-layer memory with runtime context, SQLite persistence, and ChromaDB semantic retrieval.',
+      'Connected local Ollama models to workflow orchestration and development tools for files, terminals, Git, web research, and project analysis.',
+    ],
+  },
+  {
+    slug: 'hell-university',
+    title: 'Hell University',
+    description:
+      'A Unity horror-adventure game with blockchain-backed purchases, inventory ownership, quest items, and account-based storage.',
+    period: 'Dec 2025 – Mar 2026',
+    role: 'Lead Game & Blockchain Developer',
+    tags: ['Unity 6', 'C#', 'Solidity', 'Ganache', 'Nethereum', 'Truffle'],
+    highlights: [
+      'Developed horror gameplay systems including enemy AI, chase behavior, jump scares, navigation, tutorials, and interactive inventory mechanics.',
+      'Integrated Ganache and Nethereum for ETH vending purchases, account balances, top-ups, and blockchain-backed item ownership.',
+      'Created Solidity contracts for vending transactions, quest items, and account-tied persistent storage.',
+    ],
+  },
+  {
     slug: 'biotrack-healthcare',
     title: 'BioTrack Healthcare',
     description:
@@ -21,19 +49,6 @@ export const projects: Project[] = [
       'Built responsive, role-based dashboards for health monitoring, vitals history, medical records, analytics, reports, and AI advisory workflows.',
       'Developed secure REST APIs for authentication, sessions, RBAC, provider verification, patients, health centers, alerts, and audit logs.',
       'Connected OpenAI health insights, Flutter vital-scanning and PPG workflows, and blockchain proof logging across the platform.',
-    ],
-  },
-  {
-    slug: 'medexplain',
-    title: 'MedExplain',
-    description:
-      'An AI-powered web and mobile application that uses natural language processing to simplify medical terms, diagnoses, and prescriptions for non-medical users.',
-    period: 'Sep 2025 – Nov 2025',
-    role: 'Software & AI Developer',
-    tags: ['JavaScript', 'Python', 'NLP', 'MySQL', 'PHP', 'Jetpack Compose'],
-    highlights: [
-      'Built real-time response and data-processing features across the web and mobile experiences.',
-      'Focused the application on making complex medical information clearer and more accessible to non-medical users.',
     ],
   },
   {
@@ -50,16 +65,16 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'ladon-photocopies',
-    title: 'Ladon Photocopies',
+    slug: 'medexplain',
+    title: 'MedExplain',
     description:
-      'A database-backed web and mobile e-commerce application created for a local photocopying and supplies business.',
-    period: 'Feb 2025 – Mar 2025',
-    role: 'Full-Stack Developer',
-    tags: ['JavaScript', 'PHP', 'MySQL', 'Jetpack Compose', 'Stripe'],
+      'An AI-powered web and mobile application that uses natural language processing to simplify medical terms, diagnoses, and prescriptions for non-medical users.',
+    period: 'Sep 2025 – Nov 2025',
+    role: 'Software & AI Developer',
+    tags: ['JavaScript', 'Python', 'NLP', 'MySQL', 'PHP', 'Jetpack Compose'],
     highlights: [
-      'Collaborated with a development team to deliver the web and mobile shopping experiences.',
-      'Implemented real-time product data display and integrated Stripe payment functionality.',
+      'Built real-time response and data-processing features across the web and mobile experiences.',
+      'Focused the application on making complex medical information clearer and more accessible to non-medical users.',
     ],
   },
   {
@@ -74,6 +89,19 @@ export const projects: Project[] = [
       'Supports secure account authentication and profile management through the mobile experience.',
       'Lets guests browse available rooms, filter by room type, and review room details and amenities.',
       'Checks reservation dates for availability, calculates the total stay price, and processes payments with Stripe.',
+    ],
+  },
+  {
+    slug: 'ladon-photocopies',
+    title: 'Ladon Photocopies',
+    description:
+      'A database-backed web and mobile e-commerce application created for a local photocopying and supplies business.',
+    period: 'Feb 2025 – Mar 2025',
+    role: 'Full-Stack Developer',
+    tags: ['JavaScript', 'PHP', 'MySQL', 'Jetpack Compose', 'Stripe'],
+    highlights: [
+      'Collaborated with a development team to deliver the web and mobile shopping experiences.',
+      'Implemented real-time product data display and integrated Stripe payment functionality.',
     ],
   },
   {

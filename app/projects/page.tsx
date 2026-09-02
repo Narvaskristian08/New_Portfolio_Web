@@ -35,8 +35,8 @@ export default function ProjectsPage({ searchParams }: ProjectsPageProps) {
           <p className="text-sm uppercase tracking-[0.2em] hand-drawn">Selected work</p>
           <h1 className="text-5xl md:text-6xl font-black hand-drawn sketch-underline">Projects</h1>
           <p className="text-lg md:text-xl max-w-3xl opacity-80">
-            Full-stack, frontend, mobile, and AI builds shaped around healthcare, accessibility,
-            commerce, and computer vision.
+            Full-stack, mobile, AI, blockchain, and game builds shaped around practical problems,
+            local-first systems, and interactive experiences.
           </p>
         </div>
 
