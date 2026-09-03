@@ -24,6 +24,20 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'noir',
+    title: 'NOIR',
+    description:
+      'An automated QA platform that runs browser-based checks against deployed websites and streams results into a real-time testing dashboard.',
+    period: 'Aug 2026 – Sep 2026',
+    role: 'Full-Stack Developer & QA Automation Engineer',
+    tags: ['React', 'TypeScript', 'Express.js', 'Playwright', 'Socket.IO', 'Supabase'],
+    highlights: [
+      'Built a Playwright test engine for availability, links, forms, buttons, responsive layouts, console and network errors, accessibility, security checks, screenshots, and traces.',
+      'Connected the React dashboard to REST APIs and Socket.IO for live run progress, history, detailed results, cancellation, and artifact management.',
+      'Implemented Supabase authentication, server-enforced guest and daily usage limits, URL validation, SSRF protection, and rate limiting.',
+    ],
+  },
+  {
     slug: 'hell-university',
     title: 'Hell University',
     description:
