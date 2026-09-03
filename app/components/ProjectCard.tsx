@@ -1,10 +1,8 @@
-import Link from 'next/link'
 import type { Project } from '@/lib/data'
 
 type ProjectCardProps = {
   project: Project
   index: number
-  detailsHref?: string
   anchor?: boolean
   headingLevel?: 2 | 3
 }
@@ -12,11 +10,11 @@ type ProjectCardProps = {
 export default function ProjectCard({
   project,
   index,
-  detailsHref,
   anchor = false,
   headingLevel = 3,
 }: ProjectCardProps) {
   const Heading = headingLevel === 2 ? 'h2' : 'h3'
+  const [primaryGithubLink, ...relatedGithubLinks] = project.githubLinks ?? []
 
   return (
     <article
@@ -40,10 +38,43 @@ export default function ProjectCard({
         ))}
       </div>
 
-      {detailsHref && (
-        <Link href={detailsHref} className="pt-4 inline-block text-sm font-semibold sketch-nav-link">
-          View details →
-        </Link>
+      {primaryGithubLink ? (
+        <div className="pt-4 space-y-2">
+          <a
+            href={primaryGithubLink.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-sm font-semibold sketch-nav-link"
+            aria-label={`View ${project.title} on GitHub${primaryGithubLink.private ? ' (private repository)' : ''} (opens in a new tab)`}
+          >
+            View details ↗{primaryGithubLink.private ? ' · Private repo' : ''}
+          </a>
+
+          {relatedGithubLinks.length > 0 && (
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs opacity-75">
+              <span className="font-semibold">Related repos:</span>
+              {relatedGithubLinks.map((link) => (
+                <a
+                  key={link.url}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:opacity-70"
+                  aria-label={`Open ${link.label} for ${project.title} (opens in a new tab)`}
+                >
+                  {link.label} ↗
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <span
+          className="pt-4 inline-block text-sm font-semibold opacity-45 cursor-not-allowed"
+          aria-disabled="true"
+        >
+          No GitHub repo
+        </span>
       )}
     </article>
   )

@@ -4,15 +4,6 @@ import Link from 'next/link'
 import { projects } from '@/lib/data'
 import ProjectCard from './ProjectCard'
 
-const PROJECTS_PER_PAGE = 9
-
-function getProjectDetailsHref(index: number, slug: string) {
-  const page = Math.floor(index / PROJECTS_PER_PAGE) + 1
-  const pagePath = page === 1 ? '/projects' : `/projects?page=${page}`
-
-  return `${pagePath}#${slug}`
-}
-
 export default function Projects() {
   const featuredProjects = projects.slice(0, 6)
 
@@ -28,7 +19,6 @@ export default function Projects() {
               key={project.slug}
               project={project}
               index={idx}
-              detailsHref={getProjectDetailsHref(idx, project.slug)}
             />
           ))}
         </div>

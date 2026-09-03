@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <main className="min-h-screen pt-24 space-y-20 md:space-y-28 paper-texture">
       <Hero />
-      <About />
+      <About compact />
       <Projects />
       <Contact />
     </main>

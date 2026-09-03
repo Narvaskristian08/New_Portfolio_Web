@@ -8,7 +8,7 @@ export default function Hero() {
     >
       <div className="max-w-4xl mx-auto text-center space-y-6">
         <p className="inline-flex items-center gap-2 rounded-full border-2 border-black/70 px-4 py-2 text-sm font-semibold tracking-tight shadow-[3px_3px_0px_rgba(0,0,0,0.65)] dark:border-white/70 animate-fade-delay-1">
-          Software Engineer & Product Builder
+          Aspiring Software Engineer
         </p>
         <h1 className="text-6xl md:text-8xl font-bold hand-drawn sketch-underline animate-fade-delay-2">
           Hello, I&apos;m <span className="inline-block transform rotate-1">Kristian Dave</span>

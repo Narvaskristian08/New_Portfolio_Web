@@ -5,7 +5,14 @@ export type Project = {
   period: string
   role: string
   tags: string[]
+  githubLinks?: GithubProjectLink[]
   highlights?: string[]
+}
+
+export type GithubProjectLink = {
+  label: string
+  url: string
+  private?: boolean
 }
 
 export const projects: Project[] = [
@@ -17,6 +24,9 @@ export const projects: Project[] = [
     period: 'Jul 2026 – Sep 2026',
     role: 'Solo AI Systems Developer',
     tags: ['Python', 'Ollama', 'Multi-Agent AI', 'ChromaDB', 'SQLite', 'Pydantic'],
+    githubLinks: [
+      { label: 'swarm-architecture', url: 'https://github.com/Narvaskristian08/swarm-architecture' },
+    ],
     highlights: [
       'Built an orchestration system for eight specialized agents covering planning, coding, review, research, testing, memory, reflection, and framework installation.',
       'Implemented three-layer memory with runtime context, SQLite persistence, and ChromaDB semantic retrieval.',
@@ -45,6 +55,9 @@ export const projects: Project[] = [
     period: 'Dec 2025 – Mar 2026',
     role: 'Lead Game & Blockchain Developer',
     tags: ['Unity 6', 'C#', 'Solidity', 'Ganache', 'Nethereum', 'Truffle'],
+    githubLinks: [
+      { label: 'Hell-University', url: 'https://github.com/Narvaskristian08/Hell-University' },
+    ],
     highlights: [
       'Developed horror gameplay systems including enemy AI, chase behavior, jump scares, navigation, tutorials, and interactive inventory mechanics.',
       'Integrated Ganache and Nethereum for ETH vending purchases, account balances, top-ups, and blockchain-backed item ownership.',
@@ -59,6 +72,13 @@ export const projects: Project[] = [
     period: 'Capstone Project · 2025',
     role: 'Full-Stack & AI Developer',
     tags: ['Next.js', 'TypeScript', 'Express.js', 'MongoDB', 'Flutter', 'OpenAI API', 'Solidity'],
+    githubLinks: [
+      {
+        label: 'biotrack-healthcare',
+        url: 'https://github.com/Narvaskristian08/biotrack-healthcare',
+        private: true,
+      },
+    ],
     highlights: [
       'Built responsive, role-based dashboards for health monitoring, vitals history, medical records, analytics, reports, and AI advisory workflows.',
       'Developed secure REST APIs for authentication, sessions, RBAC, provider verification, patients, health centers, alerts, and audit logs.',
@@ -73,6 +93,11 @@ export const projects: Project[] = [
     period: 'Sep 2025 – Nov 2025',
     role: 'Project Manager & AI Developer',
     tags: ['Python', 'TensorFlow', 'OpenCV', 'JavaScript', 'MySQL', 'PHP', 'Kotlin'],
+    githubLinks: [
+      { label: 'likha', url: 'https://github.com/k1nguofficial/likha' },
+      { label: 'HabiScan AI model', url: 'https://github.com/bennybun29/HabiScan_AI_CNN_Model_Prototype' },
+      { label: 'Likha AI', url: 'https://github.com/Azure-Defiant/Likha-AI' },
+    ],
     highlights: [
       'Implemented origin and provenance analysis with confidence scoring.',
       'Managed the mobile rebuild by coordinating project scope and delivery while contributing to the AI implementation.',
@@ -86,6 +111,9 @@ export const projects: Project[] = [
     period: 'Sep 2025 – Nov 2025',
     role: 'Software & AI Developer',
     tags: ['JavaScript', 'Python', 'NLP', 'MySQL', 'PHP', 'Jetpack Compose'],
+    githubLinks: [
+      { label: 'MedExplain-AI', url: 'https://github.com/Narvaskristian08/MedExplain-AI' },
+    ],
     highlights: [
       'Built real-time response and data-processing features across the web and mobile experiences.',
       'Focused the application on making complex medical information clearer and more accessible to non-medical users.',
@@ -99,6 +127,9 @@ export const projects: Project[] = [
     period: '2024',
     role: 'Assistant Developer',
     tags: ['Expo', 'React Native', 'TypeScript', 'NativeWind', 'Laravel API', 'Stripe'],
+    githubLinks: [
+      { label: 'hotel-haven-app', url: 'https://github.com/Narvaskristian08/hotel-haven-app' },
+    ],
     highlights: [
       'Supports secure account authentication and profile management through the mobile experience.',
       'Lets guests browse available rooms, filter by room type, and review room details and amenities.',
@@ -113,6 +144,10 @@ export const projects: Project[] = [
     period: 'Feb 2025 – Mar 2025',
     role: 'Full-Stack Developer',
     tags: ['JavaScript', 'PHP', 'MySQL', 'Jetpack Compose', 'Stripe'],
+    githubLinks: [
+      { label: 'ladon-webservice', url: 'https://github.com/Narvaskristian08/ladon-webservice' },
+      { label: 'ladon-supplies-app', url: 'https://github.com/Xyzhie-Dacanay/ladon-supplies-app' },
+    ],
     highlights: [
       'Collaborated with a development team to deliver the web and mobile shopping experiences.',
       'Implemented real-time product data display and integrated Stripe payment functionality.',
@@ -136,20 +171,4 @@ export const projects: Project[] = [
     role: 'Lead Developer',
     tags: ['HTML', 'CSS'],
   },
-]
-
-export type BlogPost = {
-  title: string
-  excerpt: string
-  date: string
-  readTime: string
-  tags: string[]
-  href?: string
-}
-
-export const blogPosts: BlogPost[] = [
-  { title: 'Designing with Imperfection', excerpt: 'Embracing hand-drawn aesthetics to make interfaces feel human.', date: 'Dec 02, 2025', readTime: '5 min', tags: ['Design', 'UI'], href: '#' },
-  { title: 'Micro-interactions that Matter', excerpt: 'Small animations that guide users without getting in the way.', date: 'Nov 18, 2025', readTime: '6 min', tags: ['Animation', 'UX'], href: '#' },
-  { title: 'Shipping Fast with Next.js 14', excerpt: 'How the app router simplifies data and layout composition.', date: 'Oct 28, 2025', readTime: '4 min', tags: ['Next.js', 'Dev'], href: '#' },
-  { title: 'Dark Mode that Feels Intentional', excerpt: 'Tips to balance contrast, shadows, and textures for dark themes.', date: 'Oct 10, 2025', readTime: '7 min', tags: ['Design', 'Theme'], href: '#' },
 ]
